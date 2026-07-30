@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from tkinter import TclError
 from sympy import symbols, Eq, solve, pretty, sympify, SympifyError, Mul
+import os
 import random
 
 
@@ -148,3 +149,5 @@ class JeuEquation():
 
 app = JeuEquation()
 app.start()
+os.system("clear")
+print("Fin du programme !!!")
