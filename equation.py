@@ -16,11 +16,11 @@ class JeuEquation():
         self.label_equation = ctk.CTkLabel(self.app, font=ctk.CTkFont(family="Consolas", size=15))
         self.label_solution = ctk.CTkLabel(self.app)
         self.timer_label = ctk.CTkLabel(self.app, font=ctk.CTkFont(family="Arial", size=15))
-        self.buttton_generate = ctk.CTkButton(self.app, text="Nouvelle partie", command=self.genere_equation, font=ctk.CTkFont(family="Arial", size=15))
-        self.buttton_reponse = ctk.CTkButton(self.app, text="Confirmer la réponse", command=self.solve_equation, font=ctk.CTkFont(family="Arial", size=15))
+        self.button_generate = ctk.CTkButton(self.app, text="Nouvelle partie", command=self.genere_equation, font=ctk.CTkFont(family="Arial", size=15))
+        self.button_reponse = ctk.CTkButton(self.app, text="Confirmer la réponse", command=self.solve_equation, font=ctk.CTkFont(family="Arial", size=15))
         self.selected_option = ctk.StringVar(value="Facile")
         self.selected_timer = ctk.BooleanVar(value=False)
-        self.entry = ctk.CTkEntry(self.app, width=160, font=ctk.CTkFont(family="Arial", size=15))
+        self.entry = ctk.CTkEntry(self.app, width=190, font=ctk.CTkFont(family="Arial", size=15), placeholder_text="Entrez votre réponse...")
 
 
     def genere_equation(self) :
@@ -56,7 +56,7 @@ class JeuEquation():
 
         self.entry.delete(0 , ctk.END)
         self.label_solution.configure(text="")
-        self.buttton_reponse.configure(state="normal")
+        self.button_reponse.configure(state="normal")
 
         timer_option = self.selected_timer.get()
         if self.timer_id:
@@ -77,7 +77,7 @@ class JeuEquation():
             else :
                 self.label_solution.configure(text=f"It is a bad answer\nGood answer: {solution}", font=ctk.CTkFont(family="Arial", size=15) ,text_color="red")
 
-            self.buttton_reponse.configure(state="disabled")
+            self.button_reponse.configure(state="disabled")
         except (SympifyError, SyntaxError, TypeError) :
 
             if not user_solution.strip():
@@ -95,12 +95,12 @@ class JeuEquation():
             try :
                 if self.temps > 0 :
                     self.temps -= 1
-                    self.timer_label.configure(text=f"Temps restant: {self.temps} s", text_color="black")
+                    self.timer_label.configure(text=f"Temps restant: {self.temps} s", text_color="white")
                     self.timer_id = self.timer_label.after(1000, self.timer)
                 else :
 
                     self.timer_label.configure(text="Temps écoulé !!", text_color="red")
-                    self.buttton_reponse.configure(state="disabled") 
+                    self.button_reponse.configure(state="disabled") 
             except TclError :
                 pass   
         else :
@@ -115,6 +115,9 @@ class JeuEquation():
         self.app.destroy()
 
     def start(self):
+        ctk.set_appearance_mode("dark")
+        ctk.set_default_color_theme("dark-blue")
+
         self.app.geometry("560x475")
         self.app.title("Math - Equation")
 
@@ -133,8 +136,8 @@ class JeuEquation():
         self.label_equation.pack(pady=15)
         self.entry.pack(pady=10)
         self.label_solution.pack(pady=10)
-        self.buttton_generate.pack(pady=5)
-        self.buttton_reponse.pack(pady=5)
+        self.button_generate.pack(pady=5)
+        self.button_reponse.pack(pady=5)
 
         self.timer_label.pack(anchor="w", pady=15)
 
