@@ -74,7 +74,7 @@ class JeuEquation():
 
         try :
         
-            if sympify(solutions_list) == solution :
+            if sympify(set(solutions_list)) == set(solution) :
                 self.label_solution.configure(text="Réponse correct", font=ctk.CTkFont(family="Arial", size=15), text_color="green")
 
             else :
