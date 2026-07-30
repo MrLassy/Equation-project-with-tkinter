@@ -6,7 +6,10 @@ app = tk.Tk()
 app.title("Math - Equation")
 app.geometry("800x400")
 
+
 equation = None
+temps = 31
+timer_id = None
 # Option gestion
 selected_option = tk.StringVar(value="Facile")
 
@@ -22,7 +25,7 @@ rb3.pack(anchor="w", padx=20, pady=5)
 
 
 def genere_equation():
-    global equation
+    global equation, temps, timer_id
     
     
     option = selected_option.get()
@@ -53,7 +56,10 @@ def genere_equation():
     entry.delete(0 , tk.END)
     label_solution.config(text="")
     button2.config(state="normal")
-
+    if timer_id:
+        app.after_cancel(timer_id)
+    temps = 31
+    timer()
 
 def solve_equation():
     
@@ -74,6 +80,17 @@ def solve_equation():
 
 
 
+def timer():
+    global temps, timer_id
+
+    if temps > 0 :
+        temps = temps - 1
+        timer_label.config(text=f"Temps restant: {temps}", fg="black")
+        timer_id = timer_label.after(1000, timer)
+    else :
+        timer_label.config(text="Temps écoulé !!", fg="red")
+        button2.config(state="disabled")
+
 
 label_equation = tk.Label(app,font=("Consolas", 12))
 label_equation.pack(pady=5)
@@ -92,6 +109,10 @@ button1.pack(pady=0)
 
 button2 = tk.Button(app, text="Confirmer la réponse", command=solve_equation, state="normal")
 button2.pack(pady=20)
+
+
+timer_label = tk.Label(font=("Arial", 12))
+timer_label.pack(anchor="w")
 
 genere_equation()
 app.mainloop()
