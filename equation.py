@@ -1,4 +1,4 @@
-import tkinter as tk 
+import customtkinter as ctk
 from tkinter import TclError
 from sympy import symbols, Eq, solve, pretty, sympify, SympifyError, Mul
 import random
@@ -7,20 +7,20 @@ import random
 class JeuEquation():
 
     def __init__(self):
-        self.app = tk.Tk()
+        self.app = ctk.CTk()
         self.equation = None
         self.temps = 31
         self.timer_id = None
 
         # Déclaration des widgets 
-        self.label_equation = tk.Label(self.app, font=("Consolas", 12))
-        self.label_solution = tk.Label(self.app)
-        self.timer_label = tk.Label(self.app, font=("Arial", 12))
-        self.buttton_generate = tk.Button(self.app, text="Nouvelle partie", command=self.genere_equation, font=("Arial", 12))
-        self.buttton_reponse = tk.Button(self.app, text="Confirmer la réponse", command=self.solve_equation, font=("Arial", 12))
-        self.selected_option = tk.StringVar(value="Facile")
-        self.selected_timer = tk.BooleanVar(value=False)
-        self.entry = tk.Entry(self.app, width=25, font=("Arial", 12))
+        self.label_equation = ctk.CTkLabel(self.app, font=ctk.CTkFont(family="Consolas", size=15))
+        self.label_solution = ctk.CTkLabel(self.app)
+        self.timer_label = ctk.CTkLabel(self.app, font=ctk.CTkFont(family="Arial", size=15))
+        self.buttton_generate = ctk.CTkButton(self.app, text="Nouvelle partie", command=self.genere_equation, font=ctk.CTkFont(family="Arial", size=15))
+        self.buttton_reponse = ctk.CTkButton(self.app, text="Confirmer la réponse", command=self.solve_equation, font=ctk.CTkFont(family="Arial", size=15))
+        self.selected_option = ctk.StringVar(value="Facile")
+        self.selected_timer = ctk.BooleanVar(value=False)
+        self.entry = ctk.CTkEntry(self.app, width=160, font=ctk.CTkFont(family="Arial", size=15))
 
 
     def genere_equation(self) :
@@ -52,11 +52,11 @@ class JeuEquation():
 
         format = pretty(self.equation, use_unicode=True)
 
-        self.label_equation.config(text=format)
+        self.label_equation.configure(text=format)
 
-        self.entry.delete(0 , tk.END)
-        self.label_solution.config(text="")
-        self.buttton_reponse.config(state="normal")
+        self.entry.delete(0 , ctk.END)
+        self.label_solution.configure(text="")
+        self.buttton_reponse.configure(state="normal")
 
         timer_option = self.selected_timer.get()
         if self.timer_id:
@@ -72,18 +72,18 @@ class JeuEquation():
         try :
 
             if sympify(user_solution) in solution :
-                self.label_solution.config(text="Réponse correct", font=("Arial", 12), fg="green")
+                self.label_solution.configure(text="Réponse correct", font=ctk.CTkFont(family="Arial", size=15), text_color="green")
 
             else :
-                self.label_solution.config(text=f"It is a bad answer\nGood answer: {solution}", font=("Arial", 12), fg="red")
+                self.label_solution.configure(text=f"It is a bad answer\nGood answer: {solution}", font=ctk.CTkFont(family="Arial", size=15) ,text_color="red")
 
-            self.buttton_reponse.config(state="disabled")
+            self.buttton_reponse.configure(state="disabled")
         except (SympifyError, SyntaxError, TypeError) :
 
             if not user_solution.strip():
-                self.label_solution.config(text="Champ vide", font=("Arial", 12), fg="red")
+                self.label_solution.configure(text="Champ vide", font=ctk.CTkFont(family="Arial", size=15), text_color="red")
             else :
-                self.label_solution.config(text="Entrée incorrect", font=("Arial", 12), fg="red") 
+                self.label_solution.configure(text="Entrée incorrect", font=ctk.CTkFont(family="Arial", size=15), text_color="red") 
 
 
     def timer(self):
@@ -95,16 +95,16 @@ class JeuEquation():
             try :
                 if self.temps > 0 :
                     self.temps -= 1
-                    self.timer_label.config(text=f"Temps restant: {self.temps} s", fg="black")
+                    self.timer_label.configure(text=f"Temps restant: {self.temps} s", text_color="black")
                     self.timer_id = self.timer_label.after(1000, self.timer)
                 else :
 
-                    self.timer_label.config(text="Temps écoulé !!", fg="red")
-                    self.buttton_reponse.config(state="disabled") 
+                    self.timer_label.configure(text="Temps écoulé !!", text_color="red")
+                    self.buttton_reponse.configure(state="disabled") 
             except TclError :
                 pass   
         else :
-            self.timer_label.config(text="")         
+            self.timer_label.configure(text="")         
 
 
     def on_closing(self):
@@ -115,14 +115,14 @@ class JeuEquation():
         self.app.destroy()
 
     def start(self):
-        self.app.geometry("800x455")
+        self.app.geometry("560x475")
         self.app.title("Math - Equation")
 
         # Widget des button-radio 
-        rb1 = tk.Radiobutton(self.app, text="Facile", variable=self.selected_option, value="Facile")
-        rb2 = tk.Radiobutton(self.app, text="Moyen", variable=self.selected_option, value="Moyen")
-        rb3 = tk.Radiobutton(self.app, text="Difficile", variable=self.selected_option, value="Difficile")
-        check_timer = tk.Checkbutton(self.app, text="Timer", variable=self.selected_timer)
+        rb1 = ctk.CTkRadioButton(self.app, text="Facile", variable=self.selected_option, value="Facile")
+        rb2 = ctk.CTkRadioButton(self.app, text="Moyen", variable=self.selected_option, value="Moyen")
+        rb3 = ctk.CTkRadioButton(self.app, text="Difficile", variable=self.selected_option, value="Difficile")
+        check_timer = ctk.CTkCheckBox(self.app, text="Timer", variable=self.selected_timer)
 
         # Mis en page des Widgets 
         rb1.pack(anchor="w", padx=20, pady=5)
@@ -132,7 +132,7 @@ class JeuEquation():
 
         self.label_equation.pack(pady=15)
         self.entry.pack(pady=10)
-        self.label_solution.pack(pady=15)
+        self.label_solution.pack(pady=10)
         self.buttton_generate.pack(pady=5)
         self.buttton_reponse.pack(pady=5)
 
