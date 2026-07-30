@@ -48,7 +48,8 @@ class JeuEquation():
             a = random.randint(1, 9)
             b = random.randint(1, 9)
             c = random.randint(-10, 10)
-            self.equation = Eq( a*x**2 + b * x + c, 0)
+            d = random.randint(-10, 10)
+            self.equation = Eq( Mul((a*x + b),(c*x + d), evaluate=False), 0)
             self.temps = 91
 
         format = pretty(self.equation, use_unicode=True)
@@ -68,11 +69,12 @@ class JeuEquation():
 
     def solve_equation(self):
         solution = list(solve(self.equation))
-        user_solution = self.entry.get()
+        user_solutions = self.entry.get()
+        solutions_list = [us.strip() for us in user_solutions.split(",")]
 
         try :
-
-            if sympify(user_solution) in solution :
+        
+            if sympify(solutions_list) == solution :
                 self.label_solution.configure(text="Réponse correct", font=ctk.CTkFont(family="Arial", size=15), text_color="green")
 
             else :
@@ -81,7 +83,7 @@ class JeuEquation():
             self.button_reponse.configure(state="disabled")
         except (SympifyError, SyntaxError, TypeError) :
 
-            if not user_solution.strip():
+            if not user_solutions.strip():
                 self.label_solution.configure(text="Champ vide", font=ctk.CTkFont(family="Arial", size=15), text_color="red")
             else :
                 self.label_solution.configure(text="Entrée incorrect", font=ctk.CTkFont(family="Arial", size=15), text_color="red") 
