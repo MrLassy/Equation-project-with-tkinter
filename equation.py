@@ -19,6 +19,7 @@ class JeuEquation():
         self.buttton_generate = tk.Button(self.app, text="Nouvelle partie", command=self.genere_equation, font=("Arial", 12))
         self.buttton_reponse = tk.Button(self.app, text="Confirmer la réponse", command=self.solve_equation, font=("Arial", 12))
         self.selected_option = tk.StringVar(value="Facile")
+        self.selected_timer = tk.BooleanVar(value=False)
         self.entry = tk.Entry(self.app, width=25, font=("Arial", 12))
 
 
@@ -57,10 +58,12 @@ class JeuEquation():
         self.label_solution.config(text="")
         self.buttton_reponse.config(state="normal")
 
+        timer_option = self.selected_timer.get()
         if self.timer_id:
             self.app.after_cancel(self.timer_id)
-        self.timer()
-
+        if timer_option :
+            self.timer()
+        
 
     def solve_equation(self):
         solution = list(solve(self.equation))
@@ -87,17 +90,22 @@ class JeuEquation():
         if not self.timer_label.winfo_exists() :
             return
 
-        try :
-            if self.temps > 0 :
-                self.temps -= 1
-                self.timer_label.config(text=f"Temps restant: {self.temps} s", fg="black")
-                self.timer_id = self.timer_label.after(1000, self.timer)
-            else :
+        option = self.selected_timer.get()
+        if option :
+            try :
+                if self.temps > 0 :
+                    self.temps -= 1
+                    self.timer_label.config(text=f"Temps restant: {self.temps} s", fg="black")
+                    self.timer_id = self.timer_label.after(1000, self.timer)
+                else :
 
-                self.timer_label.config(text="Temps écoulé !!", fg="red")
-                self.buttton_reponse.config(state="disabled") 
-        except TclError :
-            pass        
+                    self.timer_label.config(text="Temps écoulé !!", fg="red")
+                    self.buttton_reponse.config(state="disabled") 
+            except TclError :
+                pass   
+        else :
+            self.timer_label.config(text="")         
+
 
     def on_closing(self):
     
@@ -107,18 +115,20 @@ class JeuEquation():
         self.app.destroy()
 
     def start(self):
-        self.app.geometry("800x400")
+        self.app.geometry("800x455")
         self.app.title("Math - Equation")
 
         # Widget des button-radio 
         rb1 = tk.Radiobutton(self.app, text="Facile", variable=self.selected_option, value="Facile")
         rb2 = tk.Radiobutton(self.app, text="Moyen", variable=self.selected_option, value="Moyen")
         rb3 = tk.Radiobutton(self.app, text="Difficile", variable=self.selected_option, value="Difficile")
+        check_timer = tk.Checkbutton(self.app, text="Timer", variable=self.selected_timer)
 
         # Mis en page des Widgets 
         rb1.pack(anchor="w", padx=20, pady=5)
         rb2.pack(anchor="w", padx=20, pady=5)        
         rb3.pack(anchor="w", padx=20, pady=5)
+        check_timer.pack(anchor="n")
 
         self.label_equation.pack(pady=15)
         self.entry.pack(pady=10)
